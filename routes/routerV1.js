@@ -12,7 +12,11 @@ const {
   findJourney,
 } = require("../controller/journey");
 const { findUser } = require("../controller/profile");
-const { addBookmark, findUserBookmark } = require("../controller/bookmark");
+const {
+  addBookmark,
+  findUserBookmark,
+  deleteBookmark,
+} = require("../controller/bookmark");
 
 // login and register
 router.post("/login", login);
@@ -31,5 +35,6 @@ router.get("/profile/:id", authenticated, findUser);
 // bookmark
 router.post("/bookmark", authenticated, addBookmark);
 router.get("/bookmarks/user/:bmUserId", authenticated, findUserBookmark);
+router.delete("/bookmark/:id", authenticated, deleteBookmark);
 
 module.exports = router;

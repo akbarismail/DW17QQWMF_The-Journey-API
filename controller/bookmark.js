@@ -63,3 +63,23 @@ exports.findUserBookmark = async (req, res) => {
     });
   }
 };
+
+exports.deleteBookmark = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const delBookmark = await Bookmark.destroy({ where: { id } });
+
+    if (!delBookmark)
+      return res.status(400).send({
+        message: `Bookmark with id: ${id} is not existed`,
+      });
+
+    res.status(200).send({
+      message: `Trip has been deleted`,
+      data: id,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
