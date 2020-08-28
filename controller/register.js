@@ -46,8 +46,11 @@ exports.register = async (req, res) => {
     const hashedPassword = await bycript.hash(password, saltRound);
 
     const register = await User.create({
-      ...req.body,
+      fullName,
+      email,
       password: hashedPassword,
+      phone,
+      address,
     });
 
     // <----- JWT-Token ----->
@@ -62,7 +65,14 @@ exports.register = async (req, res) => {
     // <---- Success response ---->
     res.status(200).send({
       message: "You have been registered",
-      data: { register, token },
+      data: {
+        id: register.id,
+        fullName: register.fullName,
+        email: register.email,
+        phone: register.phone,
+        address: register.address,
+        token,
+      },
     });
   } catch (error) {
     console.log(error);

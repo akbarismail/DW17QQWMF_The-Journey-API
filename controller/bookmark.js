@@ -1,10 +1,8 @@
-const { Bookmark } = require("../models");
+const { Bookmark, User, Journey } = require("../models");
 
 exports.addBookmark = async (req, res) => {
   try {
-    const { journeyId } = req.body;
-
-    const bookmark = await Bookmark.create({ journeyId });
+    const bookmark = await Bookmark.create(req.body);
 
     res.status(200).send({
       message: "Add bookmark success",
@@ -15,16 +13,35 @@ exports.addBookmark = async (req, res) => {
   }
 };
 
-exports.findBookmark = async (req, res) => {
+exports.findUserBookmark = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { bmUserId } = req.params;
 
-    const findBook = await Bookmark.findOne({
+    const findBook = await Bookmark.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: {
+            exclude: ["password", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Journey,
+          as: "journey",
+          attributes: {
+            exclude: ["userId", "createdAt", "updatedAt"],
+          },
+        },
+      ],
+      order: [["id", "DESC"]],
+
       where: {
-        id,
+        bmUserId,
       },
+
       attributes: {
-        exclude: ["createdAt", "updatedAt"],
+        exclude: ["bmUserId", "journeyId", "createdAt", "updatedAt"],
       },
     });
 

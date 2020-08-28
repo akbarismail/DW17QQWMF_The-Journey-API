@@ -11,7 +11,7 @@ exports.findJourneys = async (req, res) => {
         },
       },
       attributes: {
-        exclude: ["UserId", "userId", "createdAt", "updatedAt"],
+        exclude: ["UserId", "userId", "updatedAt"],
       },
       order: [["id", "DESC"]],
     });
@@ -61,17 +61,62 @@ exports.findJourneyUser = async (req, res) => {
 
 exports.addJourney = async (req, res) => {
   try {
-    const { title, userId, desc } = req.body;
-
     const journey = await Journey.create({
-      title,
-      userId,
-      desc,
+      ...req.body,
     });
 
     res.status(200).send({
       message: "Add journey success",
       data: journey,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.findJourney = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const detailJourney = await Journey.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: User,
+        as: "user",
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "password"],
+        },
+      },
+      attributes: {
+        exclude: ["updatedAt"],
+      },
+    });
+
+    if (!detailJourney)
+      return res.status(400).send({
+        message: `Journey with id: ${id} is not existed`,
+      });
+
+    res.status(200).send({
+      message: `Journey with id ${id} has been founded`,
+      data: detailJourney,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.updateJourney = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const editJourney = await Journey.update(req.body, { where: { id } });
+
+    res.status(200).send({
+      message: `Journey id ${id} has been updated`,
+      data: editJourney,
     });
   } catch (error) {
     console.log(error);

@@ -60,7 +60,14 @@ exports.login = async (req, res) => {
     // <---- Success response ---->
     res.status(200).send({
       message: "Login success",
-      data: { user, token },
+      data: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        token,
+      },
     });
   } catch (error) {
     console.log(error);
