@@ -1,27 +1,33 @@
-require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const multiparty = require("connect-multiparty");
-
-const MultipartyMiddleware = multiparty({ uploadDir: "./uploads" });
-const morgan = require("morgan");
 const app = express();
-
-app.use(cors());
-
 const port = 5000;
 const routerV1 = require("./routes/routerV1");
+// const morgan = require("morgan");
 
-app.use(bodyParser.urlencoded({ extended: true }));
+const multiparty = require("connect-multiparty");
+require("dotenv").config();
+
+const MultipartyMiddleware = multiparty({ uploadDir: "./uploads" });
+
+app.use(cors());
 app.use(bodyParser.json());
-app.get("/", (req, res) => {
+app.use(express.json());
+
+app.use("/api/v1", routerV1);
+app.use("/uploads", express.static("uploads"));
+
+// app.use("/uploads", MultipartyMiddleware, express.static("uploads"));
+
+app.post("/uploads", MultipartyMiddleware, (req, res) => {
+  console.log(req.files.upload);
+  var TempFile = req.files.upload.path;
+
   res.status(200).json({
-    message: "Succes",
+    uploaded: true,
+    url: `http://localhost:5000/${TempFile}`,
   });
 });
-app.use("/uploads", express.static("uploads"));
-app.use("/api/v1", routerV1);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

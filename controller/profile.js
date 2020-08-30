@@ -31,3 +31,25 @@ exports.findUser = async (req, res) => {
     });
   }
 };
+
+exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { imageUser } = req.files;
+    const imgUser = imageUser;
+    await imgUser.mv(`./uploads/${imgUser}`);
+
+    const changeUser = await User.update({
+      userImg: imgUser,
+      where: { id },
+    });
+
+    res.status(200).send({
+      message: "User has been updated",
+      data: changeUser,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

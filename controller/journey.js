@@ -61,8 +61,13 @@ exports.findJourneyUser = async (req, res) => {
 
 exports.addJourney = async (req, res) => {
   try {
+    const { journeyImg } = req.files;
+    const imgJourney = journeyImg.name;
+    await journeyImg.mv(`./uploads/${imgJourney}`);
+
     const journey = await Journey.create({
       ...req.body,
+      jnImg: journeyImg,
     });
 
     res.status(200).send({

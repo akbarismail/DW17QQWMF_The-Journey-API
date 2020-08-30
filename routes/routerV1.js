@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const fileUpload = require("express-fileupload");
 
 const { authenticated } = require("../middleware/auth");
 const { login } = require("../controller/login");
@@ -11,7 +12,7 @@ const {
   updateJourney,
   findJourney,
 } = require("../controller/journey");
-const { findUser } = require("../controller/profile");
+const { findUser, updateUser } = require("../controller/profile");
 const {
   addBookmark,
   findUserBookmark,
@@ -26,11 +27,12 @@ router.post("/register", register);
 router.get("/journey", findJourneys);
 router.get("/journey/user/:userId", authenticated, findJourneyUser);
 router.get("/journey/:id", authenticated, findJourney);
-router.post("/journey", authenticated, addJourney);
+router.post("/journey", fileUpload(), addJourney);
 router.patch("/journey/:id", authenticated, updateJourney);
 
 // profile
 router.get("/profile/:id", authenticated, findUser);
+router.patch("/profile/:id", authenticated, fileUpload(), updateUser);
 
 // bookmark
 router.post("/bookmark", authenticated, addBookmark);
