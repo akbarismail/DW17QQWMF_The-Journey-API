@@ -67,7 +67,7 @@ exports.addJourney = async (req, res) => {
 
     const journey = await Journey.create({
       ...req.body,
-      jnImg: journeyImg,
+      jnImg: imgJourney,
     });
 
     res.status(200).send({
